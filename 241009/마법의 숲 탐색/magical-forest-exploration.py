@@ -10,17 +10,20 @@ def paint(ci, cj, d, num):
             arr[ni][nj] = num
 
 def bfs(si, sj):
-    global max_i
     v = [[0]*(C+2) for _ in range(R+3)]
     q = []
+    max_i = 0
+
     v[si][sj] = 1
     q.append((si, sj))
+
     while q:
         ci, cj = q.pop(0)
-        num = arr[ci][cj]
         max_i = max(max_i, ci-2)
         if max_i == R:
-            return
+            return max_i
+
+        num = arr[ci][cj]
         for di, dj in dr:
             ni, nj = ci+di, cj+dj
             if num < 0: # 출구라면 다른 골렘으로 가능
@@ -31,6 +34,7 @@ def bfs(si, sj):
                 if v[ni][nj] == 0 and (arr[ni][nj] == num or arr[ni][nj] == -num):
                     v[ni][nj] = 1
                     q.append((ni, nj))
+    return max_i
 
 R, C, K = map(int, input().split()) # R행, C열, 정령 K명
 arr = [[1]+[0]*C+[1] for _ in range(3)] + [[1]+[0]*C+[1] for _ in range(R)] + [[1]*(C+2)]
@@ -62,9 +66,7 @@ for k in range(K):
     # 정령 맨아래로 이동시키기
     else:
         paint(i, j, d, num)
-        max_i = 0
         v = [[0]*(C+2) for _ in range(R+3)]
-        bfs(i, j)
-        ans += max_i
+        ans += bfs(i, j)
 
 print(ans)
