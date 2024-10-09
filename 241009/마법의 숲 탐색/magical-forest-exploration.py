@@ -9,27 +9,28 @@ def paint(ci, cj, d, num):
         else:
             arr[ni][nj] = num
 
-def dfs(ci, cj):
+def bfs(si, sj):
     global max_i
-    max_i = max(max_i, ci-2)
-    if max_i == R:
-        return
-    num = arr[ci][cj]
-    for di, dj in dr:
-        ni, nj = ci+di, cj+dj
-        # 출구라면 빈칸(0),채우기용(1) 빼고 다 가능
-        if num < 0:
-            if v[ni][nj] == 0 and arr[ni][nj] not in (0, 1):
-                v[ni][nj] = 1
-                dfs(ni, nj)
-                v[ni][nj] = 0
-        # 출구가 아니면 num, -num만 가능
-        else:
-            if v[ni][nj] == 0 and arr[ni][nj] in (num, -num):
-                v[ni][nj] = 1
-                dfs(ni, nj)
-                v[ni][nj] = 0
-
+    v = [[0]*(C+2) for _ in range(R+3)]
+    q = []
+    v[si][sj] = 1
+    q.append((si, sj))
+    while q:
+        ci, cj = q.pop(0)
+        num = arr[ci][cj]
+        max_i = max(max_i, ci-2)
+        if max_i == R:
+            return
+        for di, dj in dr:
+            ni, nj = ci+di, cj+dj
+            if num < 0: # 출구라면 다른 골렘으로 가능
+                if v[ni][nj] == 0 and (arr[ni][nj] > 1 or arr[ni][nj] < -1):
+                    v[ni][nj] = 1
+                    q.append((ni, nj))
+            else:       # 출구가 아니면 num, -num만 가능
+                if v[ni][nj] == 0 and (arr[ni][nj] == num or arr[ni][nj] == -num):
+                    v[ni][nj] = 1
+                    q.append((ni, nj))
 
 R, C, K = map(int, input().split()) # R행, C열, 정령 K명
 arr = [[1]+[0]*C+[1] for _ in range(3)] + [[1]+[0]*C+[1] for _ in range(R)] + [[1]*(C+2)]
@@ -63,7 +64,7 @@ for k in range(K):
         paint(i, j, d, num)
         max_i = 0
         v = [[0]*(C+2) for _ in range(R+3)]
-        dfs(i, j)
+        bfs(i, j)
         ans += max_i
 
 print(ans)
