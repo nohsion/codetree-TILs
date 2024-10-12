@@ -2,43 +2,19 @@ from collections import deque
 
 dr = ((-1,0), (1,0), (0,-1), (0,1))   # 상하좌우
 
-def rot_square(tarr):
-    K = len(tarr)
-    tarr_n = [[0]*K for _ in range(K)]
-    for i in range(K):
-        for j in range(K):
-            tarr_n[i][j] = tarr[K-1-j][i]
-    return tarr_n
-
 def rot():
-    arr_n = [[0]*N for _ in range(N)]   # 회전 결과 arr
-    arr_t = list(map(list, zip(*arr)))             # 전치행렬
+    arr_n = [[0] * N for _ in range(N)]  # 회전 결과 arr
 
     # [1] 십자모양 회전
-    tlst1 = arr_t[M]
-    arr_n[M] = tlst1    # 가로 결정
-
-    tlst2 = arr[M][::-1]
     for i in range(N):
-        arr_n[i][M] = tlst2[i]  # 세로 결정
+        arr_n[M][i] = arr[i][M]     # 가로 결정
+        arr_n[i][M] = arr[M][N-1-i] # 세로 결정
 
     # [2] 정사각형 4개 회전
-    arr1 = [lst[0:M] for lst in arr[0:M]]
-    arr2 = [lst[M+1:N] for lst in arr[0:M]]
-    arr3 = [lst[0:M] for lst in arr[M+1:N]]
-    arr4 = [lst[M+1:N] for lst in arr[M+1:N]]
-    for i in range(M):
-        for j in range(M):
-            arr_n[i][j] = rot_square(arr1)[i][j]
-    for i in range(M):
-        for j in range(M):
-            arr_n[i][M+1+j] = rot_square(arr2)[i][j]
-    for i in range(M):
-        for j in range(M):
-            arr_n[M+1+i][j] = rot_square(arr3)[i][j]
-    for i in range(M):
-        for j in range(M):
-            arr_n[M+1+i][M+1+j] = rot_square(arr4)[i][j]
+    for si, sj in ((0, 0), (0, M + 1), (M + 1, 0), (M + 1, M + 1)):
+        for i in range(M):
+            for j in range(M):
+                arr_n[si + i][sj + j] = arr[si + M - 1 - j][sj + i]
     return arr_n
 
 def dup(g1, g2):    # 그룹 2개의 맞닿은 변의 수 구하기
