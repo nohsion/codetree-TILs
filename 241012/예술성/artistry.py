@@ -1,3 +1,5 @@
+from collections import deque
+
 dr = ((-1,0), (1,0), (0,-1), (0,1))   # 상하좌우
 
 def rot_square(tarr):
@@ -56,14 +58,14 @@ def get_score(g1, g2):  # 그룹 2개의 예술점수 구하기
     return (g1_cnt + g2_cnt)*g1_value*g2_value*dup(g1, g2)
 
 def bfs(si, sj, cnt):
-    q = []
+    q = deque()
 
     v[si][sj] = cnt
     q.append((si, sj))
     gcnt = 1
 
     while q:
-        ci, cj = q.pop(0)
+        ci, cj = q.popleft()
         for di, dj in dr:
             ni, nj = ci+di, cj+dj
             if 0<=ni<N and 0<=nj<N and v[ni][nj] == 0 and arr[ni][nj] == arr[ci][cj]:   # 범위내, 미방문, 나랑 같다면
